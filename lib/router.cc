@@ -1019,6 +1019,14 @@ configure_order_compar(const void *athunk, const void *bthunk, void *copthunk)
     return configure_order_phase[*a] - configure_order_phase[*b];
 }
 
+static int
+suspend_order_compar(const void *athunk, const void *bthunk, void *copthunk)
+{
+    const int* a = (const int*) athunk, *b = (const int*) bthunk;
+    const int* suspend_order_phase = (const int*) copthunk;
+    return suspend_order_phase[*a] - suspend_order_phase[*b];
+}
+
 inline Handler*
 Router::xhandler(int hi) const
 {
@@ -1077,6 +1085,15 @@ Router::initialize(ErrorHandler *errh)
 	    _element_configure_order[i] = i;
 	}
 	click_qsort(&_element_configure_order[0], _element_configure_order.size(), sizeof(int), configure_order_compar, configure_phase.begin());
+    }
+    _element_suspend_order.assign(nelements(), 0);
+    if (_element_suspend_order.size()) {
+	Vector<int> suspend_phase(nelements(), 0);
+	for (int i = 0; i < _elements.size(); i++) {
+	    suspend_phase[i] = _elements[i]->suspend_phase();
+	    _element_suspend_order[i] = i;
+	}
+	click_qsort(&_element_suspend_order[0], _element_suspend_order.size(), sizeof(int), suspend_order_compar, suspend_phase.begin());
     }
 
     // remember how far the configuration process got for each element
@@ -1197,6 +1214,61 @@ Router::initialize(ErrorHandler *errh)
 
 	_runcount = 0;
 	return -1;
+    }
+}
+
+void
+Router::suspend(ErrorHandler* errh)
+{
+    Element* elems[_elements.size()];
+    bool done = true;
+    int ord = 0;
+
+    while (ord < _elements.size()) {
+        int n_elems;
+        int curr_phase;
+
+        elems[0] = _elements[_element_suspend_order[ord]];
+
+        ord++;
+        n_elems = 1;
+        curr_phase = elems[0]->suspend_phase();
+
+        while (ord < _elements.size()) {
+            elems[n_elems] = _elements[_element_suspend_order[ord]];
+            if (elems[n_elems]->suspend_phase() != curr_phase)
+                break;
+
+            n_elems++;
+            ord++;
+        }
+
+        do {
+            done = true;
+
+            for (int i = 0; i < n_elems; i++) {
+                RouterContextErrh cerrh(errh, "While pausing", element(i));
+                assert(!cerrh.nerrors());
+
+                int rc = elems[i]->suspend(&cerrh);
+                done = done && !rc;
+            }
+
+            if (!done)
+                schedule();
+        } while(!done);
+    }
+}
+
+void
+Router::resume(ErrorHandler* errh)
+{
+    for (int ord = _elements.size() - 1; ord >= 0; ord--) {
+        int i = _element_suspend_order[ord];
+
+        RouterContextErrh cerrh(errh, "While resuming", element(i));
+        assert(!cerrh.nerrors());
+        _elements[i]->resume(&cerrh);
     }
 }
 

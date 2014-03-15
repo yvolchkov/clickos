@@ -28,6 +28,9 @@ class Master { public:
     inline void unpause();
     bool paused() const				{ return _master_paused > 0; }
 
+    void suspend();
+    void resume();
+
     inline int nthreads() const;
     inline RouterThread *thread(int id) const;
     void wake_somebody();

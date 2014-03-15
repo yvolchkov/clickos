@@ -215,11 +215,13 @@ router_thread(void *thread_data)
 void
 router_suspend()
 {
+	master.suspend();
 }
 
 void
 router_resume()
 {
+	master.resume();
 }
 
 void

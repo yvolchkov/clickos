@@ -1583,6 +1583,27 @@ Element::cleanup(CleanupStage stage)
     (void) stage;
 }
 
+// SUSPEND AND RESUME
+
+int
+Element::suspend_phase() const
+{
+    return SUSPEND_PHASE_DEFAULT;
+}
+
+int
+Element::suspend(ErrorHandler *errh)
+{
+    (void) errh;
+    return 0;
+}
+
+int
+Element::resume(ErrorHandler *errh)
+{
+    (void) errh;
+    return 0;
+}
 
 // LIVE CONFIGURATION
 

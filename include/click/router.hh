@@ -39,6 +39,10 @@ class Router { public:
     void set_runcount(int32_t rc);
     inline void please_stop_driver();
 
+    // SUSPEND AND RESUME
+    void suspend(ErrorHandler* errh);
+    void resume(ErrorHandler* errh);
+
     // ELEMENTS
     inline const Vector<Element*>& elements() const;
     inline int nelements() const;
@@ -250,6 +254,8 @@ class Router { public:
     mutable Vector<int> _element_name_sorter;
     Vector<int> _element_gport_offset[2];
     Vector<int> _element_configure_order;
+
+    Vector<int> _element_suspend_order;
 
     mutable Vector<Connection> _conn;
     mutable Vector<int> _conn_output_sorter;

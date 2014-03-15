@@ -108,6 +108,19 @@ class Element { public:
     static inline void static_initialize();
     static inline void static_cleanup();
 
+    // SUSPEND AND RESUME
+    enum SuspendPhase {
+	SUSPEND_PHASE_FIRST = 0,
+	SUSPEND_PHASE_INFO = 20,
+	SUSPEND_PHASE_PRIVILEGED = 90,
+	SUSPEND_PHASE_DEFAULT = 100,
+	SUSPEND_PHASE_LAST = 2000
+    };
+    virtual int suspend_phase() const;
+
+    virtual int suspend(ErrorHandler *errh);
+    virtual int resume(ErrorHandler *errh);
+
     // ELEMENT ROUTER CONNECTIONS
     String name() const;
     virtual String declaration() const;

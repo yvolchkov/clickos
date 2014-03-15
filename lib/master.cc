@@ -113,6 +113,38 @@ Master::unuse()
 	delete this;
 }
 
+#if CLICK_OS
+void
+Master::suspend()
+{
+    lock_master();
+
+    for (Router *r = _routers; r; r = r->_next_router) {
+        r->suspend(ErrorHandler::default_handler());
+    }
+
+    pause();
+    for (int i = 1; i < _nthreads; ++i) {
+        _threads[i]->fence();
+    }
+
+    unlock_master();
+}
+
+void
+Master::resume()
+{
+    lock_master();
+
+    unpause();
+    for (Router *r = _routers; r; r = r->_next_router) {
+        r->resume(ErrorHandler::default_handler());
+    }
+
+    unlock_master();
+}
+#endif
+
 void
 Master::pause()
 {

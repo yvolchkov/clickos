@@ -357,6 +357,11 @@ RouterThread::task_reheapify_from(int pos, Task* t)
 inline void
 RouterThread::run_tasks(int ntasks)
 {
+#if CLICK_OS
+    if(!_run_lock.attempt())
+        return;
+#endif
+
     set_thread_state(S_RUNTASK);
 #if CLICK_DEBUG_SCHEDULING
     _driver_task_epoch++;
@@ -478,6 +483,9 @@ RouterThread::run_tasks(int ntasks)
 #endif
 #if HAVE_ADAPTIVE_SCHEDULER
     client_update_pass(C_CLICK, t_before);
+#endif
+#if CLICK_OS
+    _run_lock.release();
 #endif
 }
 
@@ -764,6 +772,14 @@ RouterThread::kill_router(Router *r)
     _selects.kill_router(r);
 #endif
 }
+
+#ifdef CLICK_OS
+void RouterThread::fence()
+{
+    _run_lock.acquire();
+    _run_lock.release();
+}
+#endif
 
 #if CLICK_DEBUG_SCHEDULING
 String

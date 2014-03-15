@@ -212,6 +212,8 @@ class SimpleSpinlock { public:
 #if CLICK_LINUXMODULE
   private:
     spinlock_t _lock;
+#elif CLICK_MINIOS
+    uint8_t _lock;
 #elif CLICK_MULTITHREAD_SPINLOCK
   private:
     atomic_uint32_t _lock;
@@ -225,6 +227,8 @@ SimpleSpinlock::SimpleSpinlock()
 {
 #if CLICK_LINUXMODULE
     spin_lock_init(&_lock);
+#elif CLICK_MINIOS
+    _lock = 0;
 #elif CLICK_MULTITHREAD_SPINLOCK
     _lock = 0;
 #endif
@@ -245,6 +249,11 @@ SimpleSpinlock::acquire()
 {
 #if CLICK_LINUXMODULE
     spin_lock(&_lock);
+#elif CLICK_MINIOS
+    while (_lock == 1) {
+        schedule();
+    }
+    _lock = 1;
 #elif CLICK_MULTITHREAD_SPINLOCK
     while (_lock.swap(1) != 0)
 	while (_lock != 0)
@@ -263,6 +272,12 @@ SimpleSpinlock::attempt()
 {
 #if CLICK_LINUXMODULE
     return spin_trylock(&_lock);
+#elif CLICK_MINIOS
+    if (_lock == 1)
+        return false;
+
+    _lock = 1;
+    return true;
 #elif CLICK_MULTITHREAD_SPINLOCK
     return _lock.swap(1) == 0;
 #else
@@ -280,6 +295,8 @@ SimpleSpinlock::release()
 {
 #if CLICK_LINUXMODULE
     spin_unlock(&_lock);
+#elif CLICK_MINIOS
+    _lock = 0;
 #elif CLICK_MULTITHREAD_SPINLOCK
     _lock = 0;
 #endif

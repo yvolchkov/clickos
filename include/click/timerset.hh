@@ -65,6 +65,8 @@ class TimerSet { public:
     SimpleSpinlock _timer_lock;
 #if CLICK_LINUXMODULE
     struct task_struct *_timer_task;
+#elif CLICK_MINIOS
+    struct thread *_timer_thread;
 #elif HAVE_MULTITHREAD
     click_processor_t _timer_processor;
 #endif
@@ -114,6 +116,9 @@ TimerSet::lock_timers()
 #if CLICK_LINUXMODULE
     if (current != _timer_task)
 	_timer_lock.acquire();
+#elif CLICK_MINIOS
+    if (current != _timer_thread)
+	_timer_lock.acquire();
 #elif HAVE_MULTITHREAD
     if (click_current_processor() != _timer_processor)
 	_timer_lock.acquire();
@@ -123,7 +128,7 @@ TimerSet::lock_timers()
 inline bool
 TimerSet::attempt_lock_timers()
 {
-#if CLICK_LINUXMODULE || HAVE_MULTITHREAD
+#if CLICK_LINUXMODULE || HAVE_MULTITHREAD || CLICK_MINIOS
     return _timer_lock.attempt();
 #else
     return true;
@@ -135,6 +140,9 @@ TimerSet::unlock_timers()
 {
 #if CLICK_LINUXMODULE
     if (current != _timer_task)
+	_timer_lock.release();
+#elif CLICK_MINIOS
+    if (current != _timer_thread)
 	_timer_lock.release();
 #elif HAVE_MULTITHREAD
     if (click_current_processor() != _timer_processor)

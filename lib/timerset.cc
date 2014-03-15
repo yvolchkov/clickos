@@ -119,6 +119,8 @@ TimerSet::run_timers(RouterThread *thread, Master *master)
 	thread->set_thread_state(RouterThread::S_RUNTIMER);
 #if CLICK_LINUXMODULE
 	_timer_task = current;
+#elif CLICK_MINIOS
+    _timer_thread = get_current();
 #elif HAVE_MULTITHREAD
 	_timer_processor = click_current_processor();
 #endif

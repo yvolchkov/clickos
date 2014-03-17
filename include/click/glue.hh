@@ -55,7 +55,7 @@ CLICK_CXX_PROTECT
 CLICK_CXX_UNPROTECT
 # include <click/cxxunprotect.h>
 
-#else /* CLICK_USERLEVEL */
+#else /* CLICK_USERLEVEL || CLICK_OS */
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -145,6 +145,8 @@ inline uint32_t click_random() {
 #elif CLICK_LINUXMODULE
     click_random_seed = click_random_seed * 69069L + 5;
     return (click_random_seed ^ jiffies) & CLICK_RAND_MAX; // XXX jiffies??
+#elif CLICK_MINIOS
+    return rand();
 #elif HAVE_RANDOM && CLICK_RAND_MAX == RAND_MAX
     return random();
 #else
@@ -155,6 +157,8 @@ inline uint32_t click_random() {
 inline void click_srandom(uint32_t seed) {
 #if CLICK_BSDMODULE
     srandom(seed);
+#elif CLICK_MINIOS
+    srand(seed);
 #elif !CLICK_LINUXMODULE && HAVE_RANDOM && CLICK_RAND_MAX == RAND_MAX
     srandom(seed);
 #elif !CLICK_LINUXMODULE && CLICK_RAND_MAX == RAND_MAX
@@ -612,6 +616,9 @@ click_get_cycles()
     uint32_t xlo, xhi;
     __asm__ __volatile__ ("rdtsc" : "=a" (xlo), "=d" (xhi));
     return xlo;
+#elif CLICK_MINIOS
+    /* FIXME: Implement click_get_cycles for MiniOS */
+    return 0;
 #else
     // add other architectures here
     return 0;

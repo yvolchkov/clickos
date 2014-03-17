@@ -445,7 +445,7 @@ inline StringAccum &operator<<(StringAccum &, unsigned long long);
 inline StringAccum &operator<<(StringAccum &, int64_t);
 inline StringAccum &operator<<(StringAccum &, uint64_t);
 #endif
-#if defined(CLICK_USERLEVEL) || defined(CLICK_TOOL)
+#if defined(CLICK_USERLEVEL) || defined(CLICK_TOOL) || defined(CLICK_OS)
 StringAccum &operator<<(StringAccum &, double);
 #endif
 

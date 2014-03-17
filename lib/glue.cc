@@ -25,12 +25,14 @@
 #include <click/timestamp.hh>
 #include <click/error.hh>
 
-#ifdef CLICK_USERLEVEL
+#if CLICK_USERLEVEL || CLICK_OS
 # include <stdarg.h>
 # include <unistd.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-# include <fcntl.h>
+# ifndef CLICK_OS
+#  include <fcntl.h>
+# endif
 #elif CLICK_LINUXMODULE
 # if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0)
 #  include <click/cxxprotect.h>
@@ -703,6 +705,17 @@ click_jiffies()
 CLICK_ENDDECLS
 #endif
 
+#if CLICK_MINIOS
+CLICK_DECLS
+
+click_jiffies_t
+click_jiffies()
+{
+    return Timestamp::now().msecval();
+}
+
+CLICK_ENDDECLS
+#endif
 
 // OTHER
 

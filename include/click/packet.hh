@@ -15,7 +15,7 @@
 #if CLICK_NS
 # include <click/simclick.h>
 #endif
-#if (CLICK_USERLEVEL || CLICK_NS) && (!HAVE_MULTITHREAD || HAVE___THREAD_STORAGE_CLASS)
+#if (CLICK_USERLEVEL || CLICK_NS || CLICK_OS) && (!HAVE_MULTITHREAD || HAVE___THREAD_STORAGE_CLASS)
 # define HAVE_CLICK_PACKET_POOL 1
 #endif
 struct click_ether;
@@ -54,7 +54,7 @@ class Packet { public:
     // Packet now owns the mbuf.
     static inline Packet *make(struct mbuf *mbuf) CLICK_WARN_UNUSED_RESULT;
 #endif
-#if CLICK_USERLEVEL
+#if defined(CLICK_USERLEVEL) || defined(CLICK_OS)
     static WritablePacket *make(unsigned char *data, uint32_t length,
 				void (*destructor)(unsigned char *, size_t)) CLICK_WARN_UNUSED_RESULT;
 #endif
@@ -240,7 +240,7 @@ class Packet { public:
      * @post new data() == old data() + @a offset (if no copy is made)
      * @post new buffer() == old buffer() (if no copy is made) */
     Packet *shift_data(int offset, bool free_on_failure = true) CLICK_WARN_UNUSED_RESULT;
-#if CLICK_USERLEVEL
+#if defined(CLICK_USERLEVEL) || defined(CLICK_OS)
     inline void shrink_data(const unsigned char *data, uint32_t length);
     inline void change_headroom_and_length(uint32_t headroom, uint32_t length);
 #endif
@@ -700,7 +700,7 @@ class Packet { public:
     unsigned char *_data; /* where the packet starts */
     unsigned char *_tail; /* one beyond end of packet */
     unsigned char *_end;  /* one beyond end of allocated buffer */
-# if CLICK_USERLEVEL
+# if defined(CLICK_USERLEVEL) || defined(CLICK_OS)
     void (*_destructor)(unsigned char *, size_t);
 # endif
 # if CLICK_BSDMODULE
@@ -838,7 +838,7 @@ WritablePacket::initialize()
 {
     _use_count = 1;
     _data_packet = 0;
-# if CLICK_USERLEVEL
+# if defined(CLICK_USERLEVEL) || defined(CLICK_OS)
     _destructor = 0;
 # elif CLICK_BSDMODULE
     _m = 0;
@@ -1632,7 +1632,7 @@ Packet::take(uint32_t len)
 #endif
 }
 
-#if CLICK_USERLEVEL
+#if defined(CLICK_USERLEVEL) || defined(CLICK_OS)
 /** @brief Shrink the packet's data.
  * @param data new data pointer
  * @param length new length

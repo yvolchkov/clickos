@@ -44,7 +44,7 @@
 #else
 # include <stdarg.h>
 #endif
-#if CLICK_USERLEVEL
+#if CLICK_USERLEVEL || CLICK_OS
 # include <unistd.h>
 #endif
 #if CLICK_NS
@@ -2203,6 +2203,8 @@ Router::router_read_handler(Element *e, void *thunk)
 	return String::make_stable("linuxmodule", 11);
 #elif CLICK_BSDMODULE
 	return String::make_stable("bsdmodule", 9);
+#elif CLICK_OS
+	return String::make_stable("clickos", 7);
 #else
 	break;
 #endif

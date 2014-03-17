@@ -131,6 +131,9 @@ class RouterThread : private TaskLink { public:
 #if CLICK_LINUXMODULE
     struct task_struct *_linux_task;
 #endif
+#if CLICK_MINIOS
+    struct thread *_minios_thread;
+#endif
 #if HAVE_MULTITHREAD && !CLICK_LINUXMODULE
     click_processor_t _running_processor;
 #endif
@@ -337,6 +340,8 @@ RouterThread::current_thread_is_running() const
 {
 #if CLICK_LINUXMODULE
     return current == _linux_task;
+#elif CLICK_MINIOS
+    return get_current() == _minios_thread;
 #elif CLICK_USERLEVEL && HAVE_MULTITHREAD && HAVE___THREAD_STORAGE_CLASS
     return click_current_thread_id == _id;
 #elif CLICK_USERLEVEL && HAVE_MULTITHREAD

@@ -187,7 +187,13 @@ char *strerror(int errno);
 #ifdef __cplusplus
 
 /* Provide placement new. */
+#if HAVE_NEW_HDR
+# include <new>
+#elif HAVE_NEW_H
+# include <new.h>
+#else
 inline void *operator new(size_t, void *v) { return v; }
+#endif
 
 /* Define macros that surround Click declarations. */
 #ifndef CLICK_DECLS

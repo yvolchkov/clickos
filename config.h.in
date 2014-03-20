@@ -253,7 +253,7 @@
 
 /* Define stuff under a MiniOS application. */
 #ifdef CLICK_MINIOS
-#include <click/config-minios.h>
+# include <click/config-minios.h>
 #endif
 
 /* Ensure declaration of DefaultArg template. */

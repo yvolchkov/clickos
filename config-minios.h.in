@@ -2,12 +2,6 @@
 #ifndef CLICK_CONFIG_MINIOS_H
 #define CLICK_CONFIG_MINIOS_H
 
-/* Define if you have the __thread storage class specifier. */
-#undef HAVE___THREAD_STORAGE_CLASS
-
-/* Define if accept() uses socklen_t. */
-#undef HAVE_ACCEPT_SOCKLEN_T
-
 /* Define if you have the <byteswap.h> header file. */
 #undef HAVE_BYTESWAP_H
 
@@ -33,7 +27,6 @@
 /* Define if you have the <ifaddrs.h> header file. */
 #define HAVE_IFADDRS_H
 
-/* FIXME: support 32 bits? */
 /* Define if 'int64_t' is typedefed to 'long' at mini-os. */
 #define HAVE_INT64_IS_LONG_MINIOS 1
 
@@ -73,27 +66,14 @@
 /* Define if <new> exists and works. */
 #undef HAVE_NEW_HDR
 
-/* Define if you have -lproper and prop.h, and proper operations should be
-   preferred to their non-proper counterparts. */
-#undef HAVE_PROPER
-
-/* Define if you have the pselect function. */
-#undef HAVE_PSELECT
-
 /* Placement new is always provided below. */
 #define HAVE_PLACEMENT_NEW 1
-
-/* Define if you have the <pwd.h> header file. */
-#undef HAVE_PWD_H
 
 /* Define if you have the random function. */
 #undef HAVE_RANDOM
 
 /* Define if you have the snprintf function. */
 #undef HAVE_SNPRINTF
-
-/* Define if 'struct sockaddr_in' has a 'sin_len' member. */
-#undef HAVE_SOCKADDR_IN_SIN_LEN
 
 /* Define if you have the strerror function. */
 #undef HAVE_STRERROR
@@ -113,26 +93,11 @@
 /* Define if you have the strtoul function. */
 #undef HAVE_STRTOUL
 
-/* Define if you have the <sys/event.h> header file. */
-#undef HAVE_SYS_EVENT_H
-
-/* Define if you have the <sys/mman.h> header file. */
-#undef HAVE_SYS_MMAN_H
-
-/* Define if you have the tcgetpgrp function. */
-#undef HAVE_TCGETPGRP
-
 /* Define if you have u_intXX_t types but not uintXX_t types. */
 #undef HAVE_U_INT_TYPES
 
 /* Define if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
-
-/* Define if a Click user-level driver might run multiple threads. */
-#undef HAVE_USER_MULTITHREAD
-
-/* Define if Click should use Valgrind client requests. */
-#undef HAVE_VALGRIND
 
 /* Define if you have the vsnprintf function. */
 #undef HAVE_VSNPRINTF
@@ -189,11 +154,6 @@ typedef unsigned long uintptr_t;
 # define HAVE_INT64_DIVIDE 1
 #endif
 
-/* Define HAVE_MULTITHREAD based on HAVE_USER_MULTITHREAD. */
-#ifdef HAVE_USER_MULTITHREAD
-# define HAVE_MULTITHREAD HAVE_USER_MULTITHREAD
-#endif
-
 /* Define HAVE_USE_CLOCK_GETTIME if the clock_gettime function is usable. */
 #ifndef HAVE_USE_CLOCK_GETTIME
 # if HAVE_DECL_CLOCK_GETTIME && HAVE_CLOCK_GETTIME
@@ -220,7 +180,6 @@ char *strerror(int errno);
 /* Use nanosecond-granularity timestamps if they are enabled. */
 #if HAVE_NANOTIMESTAMP_ENABLED
 # define TIMESTAMP_NANOSEC 1
-# define HAVE_NANOTIMESTAMP 1	/* Deprecated */
 #endif
 
 #ifdef __cplusplus

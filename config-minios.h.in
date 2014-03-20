@@ -167,7 +167,13 @@ typedef unsigned long uintptr_t;
 #include <assert.h>
 
 /* Include mini-so base header */
+#ifdef __cplusplus
+extern "C"{
+#endif
 #include <mini-os/os.h>
+#ifdef __cplusplus
+}
+#endif
 
 /* Define if mmap is allowed. */
 #if defined(HAVE_SYS_MMAN_H) && defined(HAVE_MMAP)

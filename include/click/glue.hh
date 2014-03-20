@@ -55,7 +55,25 @@ CLICK_CXX_PROTECT
 CLICK_CXX_UNPROTECT
 # include <click/cxxunprotect.h>
 
-#else /* CLICK_USERLEVEL || CLICK_OS */
+#elif CLICK_MINIOS
+
+# include <click/cxxprotect.h>
+CLICK_CXX_PROTECT
+# include <stdio.h>
+# include <stdlib.h>
+# include <stddef.h>
+# include <string.h>
+# include <ctype.h>
+# include <errno.h>
+# include <limits.h>
+# include <time.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <sys/time.h>
+CLICK_CXX_UNPROTECT
+# include <click/cxxunprotect.h>
+
+#else /* CLICK_USERLEVEL */
 
 # include <stdio.h>
 # include <stdlib.h>

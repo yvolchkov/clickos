@@ -8,7 +8,9 @@
 #include <click/task.hh>
 #include <stdio.h>
 
+extern "C" {
 #include <netfront.h>
+}
 
 
 CLICK_DECLS

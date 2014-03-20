@@ -6,7 +6,9 @@
 #include <click/standard/scheduleinfo.hh>
 #include <click/task.hh>
 
+extern "C" {
 #include <netfront.h>
+}
 
 
 CLICK_DECLS

@@ -274,6 +274,9 @@ on_elem_readh(char *key, void *data)
 	const Handler* h;
 	String val, h_path, lock_path;
 
+    if (strncmp(key, "/read/", 6))
+        return 0;
+
 	if (f_stop)
 		return 0;
 

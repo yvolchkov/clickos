@@ -12,13 +12,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <xenstore.h>
-#include <xen/xen.h>
-#include <xen/sched.h>
-
 #ifdef __MINIOS__
 #include <mini-os/xenbus.h>
 #include <mini-os/shutdown.h>
+#include <mini-os/sched.h>
 void *__dso_handle = 0;
 #endif
 

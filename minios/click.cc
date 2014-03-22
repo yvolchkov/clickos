@@ -8,16 +8,17 @@
 #include <click/straccum.hh>
 #include <click/driver.hh>
 
+extern "C"{
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#ifdef __MINIOS__
 #include <mini-os/xenbus.h>
 #include <mini-os/shutdown.h>
 #include <mini-os/sched.h>
-void *__dso_handle = 0;
-#endif
+}
+
+void *__dso_handle = NULL;
 
 #define NLOG(fmt, ...)
 #define LOG(fmt, ...) \

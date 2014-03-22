@@ -50,9 +50,7 @@
 
 #if CLICK_USERLEVEL || CLICK_OS
 # include <click/master.hh>
-# if !CLICK_MINIOS
-#  include <click/notifier.hh>
-# endif
+# include <click/notifier.hh>
 # include <click/straccum.hh>
 # include <click/nameinfo.hh>
 # include <click/bighashmap_arena.hh>
@@ -448,9 +446,7 @@ click_static_initialize()
     ErrorHandler::static_initialize(new FileErrorHandler(stderr, ""));
 
     Router::static_initialize();
-#if !CLICK_MINIOS
     NotifierSignal::static_initialize();
-#endif
     CLICK_DEFAULT_PROVIDES;
 
     Router::add_read_handler(0, "classes", read_handler, (void *)GH_CLASSES);

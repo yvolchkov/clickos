@@ -90,10 +90,10 @@ STUB_CDEFINES	+= $(CLICK_DEFINES)
 STUB_APP_OBJS	+= $(CLICK_OBJS)
 STUB_APP_DEPS	+= $(CLICK_DEPS)
 
-$(CLICK_OBJ_DIR)/%.o: $(CLICK_SRC_DIR)/%.c
+$(CLICK_OBJ_DIR)/%.o: $(CLICK_SRC_DIR)/%.c | build-reqs
 	$(call ccompile,-c $< -o $@,CC)
 
-$(CLICK_OBJ_DIR)/%.o: $(CLICK_SRC_DIR)/%.cc
+$(CLICK_OBJ_DIR)/%.o: $(CLICK_SRC_DIR)/%.cc | build-reqs
 	$(call cxxcompile,-c $< -o $@,CXX)
 
 
@@ -135,6 +135,7 @@ ifeq (,$(filter $(MAKECMDGOALS),clean distclean elemlist $(CLICK_ELEMENTS).conf)
 -include $(CLICK_ELEMENTS).mk
 endif
 
+$(CLICK_ELEMENTS_OBJS): | build-reqs
 
 click: $(CLICK_OBJS) $(CLICK_ELEMENTS_OBJS)
 

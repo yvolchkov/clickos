@@ -45,6 +45,9 @@
 #include <click/element.hh>
 #include <click/error.hh>
 #include <click/task.hh>
+#if HAVE_MINIOS_SELECT_SET
+#include <click/timer.hh>
+#endif
 
 extern "C" {
 #include <netfront.h>
@@ -109,6 +112,11 @@ public:
 
     bool run_task(Task *);
 
+#if HAVE_MINIOS_SELECT_SET
+	void selected(int fd, int mask);
+	void run_timer(Timer *);
+#endif
+
 private:
     int _vifid;
     int _count;
@@ -121,6 +129,10 @@ private:
 
     static String read_handler(Element* e, void *thunk);
     static int reset_counts(const String &, Element *e, void *, ErrorHandler *);
+#if HAVE_MINIOS_SELECT_SET
+	uint32_t _interval;
+	Timer _timer;
+#endif
 };
 
 CLICK_ENDDECLS

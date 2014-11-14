@@ -53,7 +53,11 @@ extern "C" {
 CLICK_DECLS
 
 FromDevice::FromDevice()
+#if HAVE_MINIOS_SELECT_SET
+	: _vifid(0), _count(0), _task(this), _dev(NULL), _timer(this)
+#else
 	: _vifid(0), _count(0), _task(this), _dev(NULL)
+#endif
 {
 }
 
@@ -79,11 +83,21 @@ int
 FromDevice::initialize(ErrorHandler *errh)
 {
 	char nodename[256];
+
 	snprintf(nodename, sizeof(nodename), "device/vif/%d", _vifid);
 
 	_dev = init_netfront(nodename, NULL, NULL, NULL);
 	if (!_dev)
 		return errh->error("Unable to initialize netfront for device %d (%s)", _vifid, nodename);
+
+#if HAVE_MINIOS_SELECT_SET
+	int fd = netfront_get_fd(_dev);
+	if (fd > 0) {
+		add_select(fd, SELECT_READ);
+	}
+	_timer.initialize(this);
+	_interval = 100000;
+#endif
 
 	netfront_set_rx_handler(_dev, FromDevice::rx_handler, (void*)this);
 
@@ -102,6 +116,7 @@ FromDevice::cleanup(CleanupStage stage)
 bool
 FromDevice::run_task(Task *)
 {
+#if !HAVE_MINIOS_SELECT_SET
 	int c;
 
 	network_rx(_dev);
@@ -116,6 +131,10 @@ FromDevice::run_task(Task *)
 	_task.fast_reschedule();
 
 	return c > 0;
+#else
+	files[netfront_get_fd(_dev)].read = 1;
+	return false;
+#endif
 }
 
 void
@@ -144,6 +163,46 @@ FromDevice::reset_counts(const String &, Element *e, void *, ErrorHandler *)
     static_cast<FromDevice*>(e)->_count = 0;
     return 0;
 }
+
+#if HAVE_MINIOS_SELECT_SET
+static unsigned long loopcounter = 0;
+
+void
+FromDevice::selected(int fd, int mask)
+{
+	int c;
+
+	network_rx(_dev);
+	c = _deque.size();
+
+	for (int i = 0; likely(i < c); i++) {
+		output(0).push(_deque.front());
+		_deque.pop_front();
+	}
+	_count += c;
+
+	_timer.unschedule();
+
+	if (c > 0) {
+		loopcounter = 30000;
+		files[netfront_get_fd(_dev)].read = 1;
+	}
+
+	if (loopcounter-- > 0) {
+		files[netfront_get_fd(_dev)].read = 1;
+	} else {
+		_timer.schedule_after_msec(_interval);
+	}
+
+	_task.fast_reschedule();
+}
+
+void
+FromDevice::run_timer(Timer *)
+{
+	_timer.schedule_after_msec(_interval);
+}
+#endif
 
 CLICK_ENDDECLS
 EXPORT_ELEMENT(FromDevice)

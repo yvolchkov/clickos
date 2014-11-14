@@ -57,6 +57,9 @@
 /* Define if you have the <netdb.h> header file. */
 #define HAVE_NETDB_H 0
 
+/* Define if you have the select support. */
+#undef HAVE_MINIOS_SELECT_SET
+
 /* Define if you have the <netpacket/packet.h> header file. */
 #define HAVE_NETPACKET_PACKET_H 0
 

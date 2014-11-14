@@ -652,6 +652,7 @@ INSTALL_IF_CHANGED
 INSTALL_DATA
 INSTALL_SCRIPT
 INSTALL_PROGRAM
+MINIOS_HAVE_SELECTSET
 LINUX_DEBUG_FLAGS
 CLICKLINUX_FIXINCLUDES_PROGRAM
 LINUX_FIXINCLUDES_PROGRAM
@@ -806,6 +807,7 @@ with_xen
 with_minios
 with_newlib
 with_lwip
+enable_minios_select_set
 with_linux
 with_linux_map
 enable_all_elements
@@ -1496,6 +1498,8 @@ Optional Features:
     --disable-netisr      disable NETISR scheduling in BSD
   --enable-nsclick        enable NS simulator driver
   --enable-minios         enable MiniOS application
+  --enable-minios-select-set
+                          enable MiniOS SelectSet support
   --enable-all-elements   include all provided element groups
   --disable-analysis      do not include elements for network analysis
   --disable-app           do not include application-level elements
@@ -6587,6 +6591,14 @@ else
 fi
 
 
+# Check whether --enable-minios-select-set was given.
+if test "${enable_minios_select_set+set}" = set; then :
+  enableval=$enable_minios_select_set; :
+else
+  enable_minios_select_set=no
+fi
+
+
 if test "$enable_minios" = yes; then
     if test "$xenpath" = NONE; then
         xenpath="../xen"
@@ -7708,7 +7720,7 @@ else
 
 	    	    ac_cv_endian=0
 	    cat > conftest.$ac_ext <<EOF
-#line 7711 "configure"
+#line 7723 "configure"
 #include "confdefs.h"
 #include <$endian_hdr>
 #ifdef __BYTE_ORDER
@@ -12483,6 +12495,13 @@ if test "x$enable_minios" = xyes; then
     $as_echo "#define HAVE_MINIOS_DRIVER 1" >>confdefs.h
 
     HAVE_MINIOS_DRIVER=1
+fi
+
+MINIOS_HAVE_SELECTSET=n
+if test "x$enable_minios_select_set" = xyes; then
+    $as_echo "#define HAVE_MINIOS_SELECT_SET 1" >>confdefs.h
+
+    MINIOS_HAVE_SELECTSET=y
 fi
 
 

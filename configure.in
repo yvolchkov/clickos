@@ -226,6 +226,10 @@ AC_ARG_WITH([lwip],
     [AS_HELP_STRING([[--with-lwip[=PATH]]], [Lwip is installed in PATH])],
     [lwippath=$withval], [lwippath=NONE])
 
+AC_ARG_ENABLE([minios-select-set],
+     [AS_HELP_STRING([--enable-minios-select-set], [enable MiniOS SelectSet support])],
+     [:], [enable_minios_select_set=no])
+
 if test "$enable_minios" = yes; then
     if test "$xenpath" = NONE; then
         xenpath="../xen"
@@ -1784,6 +1788,12 @@ if test "x$enable_minios" = xyes; then
     HAVE_MINIOS_DRIVER=1
 fi
 
+MINIOS_HAVE_SELECTSET=n
+if test "x$enable_minios_select_set" = xyes; then
+    AC_DEFINE(HAVE_MINIOS_SELECT_SET)
+    MINIOS_HAVE_SELECTSET=y
+fi
+AC_SUBST(MINIOS_HAVE_SELECTSET)
 
 dnl check tools
 

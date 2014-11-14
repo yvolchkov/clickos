@@ -81,6 +81,9 @@ CLICK_OBJS0		 =		\
 	timerset.o			\
 	timestamp.o			\
 	variableenv.o
+ifeq (@MINIOS_HAVE_SELECTSET@, y)
+CLICK_OBJS0		+= selectset.o
+endif
 CLICK_OBJS		 = $(addprefix $(CLICK_OBJ_DIR)/,$(CLICK_OBJS0))
 CLICK_DEPS		 = $(patsubst %.o,%.d,$(CLICK_OBJS))
 

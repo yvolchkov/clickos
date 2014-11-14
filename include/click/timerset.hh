@@ -15,7 +15,7 @@ class TimerSet { public:
 
     Timestamp timer_expiry_steady() const	{ return _timer_expiry; }
     inline Timestamp timer_expiry_steady_adjusted() const;
-#if CLICK_USERLEVEL
+#if CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
     inline int next_timer_delay(bool more_tasks, Timestamp &t) const;
 #endif
 

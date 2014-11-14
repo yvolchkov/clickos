@@ -348,7 +348,9 @@ SelectSet::post_select(RouterThread *thread, bool acquire)
     if (thread->master()->paused() || thread->stop_flag())
 	return true;
 
+#ifndef CLICK_MINIOS
     thread->run_signals();
+#endif
     return false;
 }
 

@@ -139,13 +139,15 @@ Master::wake_somebody()
     _threads[1]->wake();
 }
 
-#if CLICK_USERLEVEL
+#if CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
+#if !CLICK_MINIOS
 inline void
 RouterThread::run_signals()
 {
     if (Master::signals_pending)
 	_master->process_signals(this);
 }
+#endif
 
 inline int
 TimerSet::next_timer_delay(bool more_tasks, Timestamp &t) const
@@ -155,7 +157,11 @@ TimerSet::next_timer_delay(bool more_tasks, Timestamp &t) const
     (void) more_tasks, (void) t;
     return 0;
 # else
+#if !CLICK_MINIOS
     if (more_tasks || Master::signals_pending)
+#else
+    if (more_tasks)
+#endif
 	return 0;
     t = timer_expiry_steady_adjusted();
     if (!t)

@@ -1666,7 +1666,7 @@ Element::home_thread() const
 
 // SELECT
 
-#if CLICK_USERLEVEL
+#if CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
 
 /** @brief Handle a file descriptor event.
  *

@@ -29,6 +29,9 @@
 # include <fcntl.h>
 # include <click/userutils.hh>
 #endif
+#if HAVE_MINIOS_SELECT_SET
+# include <fcntl.h>
+#endif
 CLICK_DECLS
 
 #if CLICK_USERLEVEL
@@ -119,7 +122,7 @@ Master::pause()
     _master_paused++;
     for (int i = 1; i < _nthreads; ++i) {
 	_threads[i]->timer_set().fence();
-#if CLICK_USERLEVEL
+#if CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
 	_threads[i]->select_set().fence();
 #endif
     }
@@ -483,7 +486,7 @@ Master::info() const
 # endif
 	if (t->_pending_head.x)
 	    sa << "\tpending";
-# if CLICK_USERLEVEL
+# if CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
 	if (t->select_set()._wake_pipe[0] >= 0) {
 	    fd_set rfd;
 	    struct timeval to;

@@ -1,8 +1,8 @@
 // -*- related-file-name: "../../lib/selectset.cc" -*-
 #ifndef CLICK_SELECTSET_HH
 #define CLICK_SELECTSET_HH 1
-#if !CLICK_USERLEVEL
-# error "<click/selectset.hh> only meaningful at user level"
+#if !CLICK_USERLEVEL && !HAVE_MINIOS_SELECT_SET
+# error "<click/selectset.hh> only meaningful at user level or minios"
 #endif
 #include <click/vector.hh>
 #include <click/sync.hh>

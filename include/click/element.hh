@@ -39,7 +39,7 @@ class Element { public:
 
     virtual bool run_task(Task *task);	// return true iff did useful work
     virtual void run_timer(Timer *timer);
-#if CLICK_USERLEVEL
+#if CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
     enum { SELECT_READ = 1, SELECT_WRITE = 2 };
     virtual void selected(int fd, int mask);
     virtual void selected(int fd);
@@ -151,7 +151,7 @@ class Element { public:
 
     RouterThread *home_thread() const;
 
-#if CLICK_USERLEVEL
+#if CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
     // SELECT
     int add_select(int fd, int mask);
     int remove_select(int fd, int mask);

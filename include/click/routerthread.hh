@@ -16,7 +16,7 @@ CLICK_CXX_PROTECT
 # include <sys/systm.h>
 CLICK_CXX_UNPROTECT
 # include <click/cxxunprotect.h>
-#elif CLICK_USERLEVEL
+#elif CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
 # include <click/selectset.hh>
 #endif
 
@@ -34,7 +34,7 @@ class RouterThread { public:
     inline Master *master() const;
     inline TimerSet &timer_set()		{ return _timers; }
     inline const TimerSet &timer_set() const	{ return _timers; }
-#if CLICK_USERLEVEL
+#if CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
     inline SelectSet &select_set()		{ return _selects; }
     inline const SelectSet &select_set() const	{ return _selects; }
 #endif
@@ -122,7 +122,7 @@ class RouterThread { public:
 #endif
 
     TimerSet _timers;
-#if CLICK_USERLEVEL
+#if CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
     SelectSet _selects;
 #endif
 

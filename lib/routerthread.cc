@@ -38,7 +38,7 @@ CLICK_CXX_PROTECT
 # include <sys/kthread.h>
 CLICK_CXX_UNPROTECT
 # include <click/cxxunprotect.h>
-#elif CLICK_USERLEVEL
+#elif CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
 # include <fcntl.h>
 #endif
 CLICK_DECLS
@@ -505,6 +505,9 @@ RouterThread::run_os()
 #if CLICK_USERLEVEL
     select_set().run_selects(this);
 #elif CLICK_MINIOS
+#if HAVE_MINIOS_SELECT_SET
+    select_set().run_selects(this);
+#endif
     /*
      * MiniOS uses a cooperative scheduler. By schedule() we'll give a chance
      * to the OS threads to run.
@@ -588,7 +591,7 @@ RouterThread::driver()
 #if CLICK_LINUXMODULE
     // this task is running the driver
     _linux_task = current;
-#elif CLICK_USERLEVEL
+#elif CLICK_USERLEVEL || HAVE_MINIOS_SELECT_SET
     select_set().initialize();
 # if CLICK_USERLEVEL && HAVE_MULTITHREAD
     _running_processor = click_current_processor();

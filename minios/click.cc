@@ -380,6 +380,7 @@ int app_shutdown(unsigned reason)
 		router_suspend();
 		kernel_suspend();
 		router_resume();
+		break;
 	default:
 		LOG("Requested shutdown with invalid reason (%d)", reason);
 		break;

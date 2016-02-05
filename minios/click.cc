@@ -329,6 +329,9 @@ int main(int argc, char **argv)
 		router_list[i].f_stop = 1;
 	}
 
+	/* Create root path, so tools detect this is a clickos instance. */
+	xenbus_write(XBT_NIL, PATH_ROOT, "");
+
 	xenbus_watch_path_token(XBT_NIL, PATH_ROOT, "router-watch",
 			&xsdev->events);
 

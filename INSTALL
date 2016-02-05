@@ -292,17 +292,21 @@ Afterwards we build the image by typing:
 	make minios
 
 And you should have an image available at './minios/build/clickos_x86_64'.
+
+To control a ClickOS instance, i.e. instal, start, stop and remove routers and
+access their element handlers, you need to build the ClickOS Control tool:
+
+	git clone https://github.com/cnplab/clickos-ctl.git clickos-ctl
+	cd clickos-ctl
+	make
+
 To boot your image, type the following command in Domain-0:
 
 	xl create minios/config.xen
 
-Finally to instantiate a click configuration, you need to fetch your guest
-virtual machine id and dump your router configuration through the xenstore
-service:
+Finally to install and start a click configuration do:
 
-	DOMID=`xl list | grep click0 | awk -F' ' '{ print $2 }'`
-	xenstore-write /local/domain/$DOMID/clickos/0/config/0 "`cat config.click`"
-	xenstore-write /local/domain/$DOMID/clickos/0/status "Running"
+	clickos install -s click0 config.click
 
 You should be able to see the following console output:
 
@@ -321,11 +325,12 @@ You should be able to see the following console output:
 	**************************
 	[router_thread:157] Starting driver...
 
-ClickOS is really fast at booting up, although it mostly depends on the tools underneath.
-If you are looking towards faster ways of booting up these virtual machines,
-have a look at the following Xen toolstack:
+ClickOS is really fast at booting up, although it mostly depends on the tools
+underneath. If you are looking towards faster ways of booting up these virtual
+machines, have a look at the following Xen toolstack:
 
 	http://github.com/cnplab/cosmos
+
 
 CLICKY GUI
 ----------

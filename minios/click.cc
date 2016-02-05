@@ -68,7 +68,7 @@ void *__dso_handle = NULL;
 /**
  * xenstore helpers
  */
-#define PATH_ROOT	"clickos"
+#define PATH_ROOT	"data/clickos"
 #define PATH_MAX_LEN	1024
 
 struct xenstore_dev {
@@ -328,6 +328,9 @@ int main(int argc, char **argv)
 	for (int i = 0; i < MAX_ROUTERS; ++i) {
 		router_list[i].f_stop = 1;
 	}
+
+	/* Create root path, so tools detect this is a clickos instance. */
+	xenbus_write(XBT_NIL, PATH_ROOT, "");
 
 	xenbus_watch_path_token(XBT_NIL, PATH_ROOT, "router-watch",
 			&xsdev->events);

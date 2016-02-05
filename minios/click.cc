@@ -68,7 +68,7 @@ void *__dso_handle = NULL;
 /**
  * xenstore helpers
  */
-#define PATH_ROOT	"clickos"
+#define PATH_ROOT	"data/clickos"
 #define PATH_MAX_LEN	1024
 
 struct xenstore_dev {

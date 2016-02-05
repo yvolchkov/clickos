@@ -325,11 +325,12 @@ You should be able to see the following console output:
 	**************************
 	[router_thread:157] Starting driver...
 
-ClickOS is really fast at booting up, although it mostly depends on the tools underneath.
-If you are looking towards faster ways of booting up these virtual machines,
-have a look at the following Xen toolstack:
+ClickOS is really fast at booting up, although it mostly depends on the tools
+underneath. If you are looking towards faster ways of booting up these virtual
+machines, have a look at the following Xen toolstack:
 
 	http://github.com/cnplab/cosmos
+
 
 CLICKY GUI
 ----------

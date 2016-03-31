@@ -162,27 +162,38 @@ router_thread(void *thread_data)
 	ri->r->unuse();
 	ri->f_stop = 1;
 
-	LOG("Master/driver stopped, closing router_thread");
+	LOG("Driver stopped, closing router_thread");
 	free(config);
 	free(rid);
 }
 
 void
-router_stop(int n = MAX_ROUTERS)
+router_stop(int n)
+{
+	if (n >= MAX_ROUTERS) {
+		return;
+	}
+
+	if (router_list[n].f_stop) {
+		return;
+	}
+
+	LOG("Stopping instance = %d...\n\n", n);
+
+	do {
+		router_list[n].r->please_stop_driver();
+		schedule();
+	} while (!(router_list[n].f_stop));
+
+	LOG("Router %d stoped.\n", n);
+}
+
+void
+router_stop_all(int n = MAX_ROUTERS)
 {
 	LOG("Stopping all routers...\n\n");
 	for (int i = n - 1; i >= 0; --i) {
-		Router *r = router_list[i].r;
-
-		if (router_list[i].f_stop)
-			continue;
-
-		LOG("Stopping instance = %d...\n\n", i);
-
-		do {
-			r->please_stop_driver();
-			schedule();
-		} while (!(router_list[i].f_stop));
+		router_stop(i);
 	}
 	LOG("Stopped all routers...\n\n");
 }
@@ -369,14 +380,14 @@ int app_shutdown(unsigned reason)
 		LOG("Requested shutdown reason=poweroff");
 		_shutdown = 1;
 		_reason = reason;
-		router_stop();
+		router_stop_all();
 		xenbus_release_wait_for_watch(&xsdev->events);
 		break;
 	case SHUTDOWN_reboot:
 		LOG("Requested shutdown reason=reboot");
 		_shutdown = 1;
 		_reason = reason;
-		router_stop();
+		router_stop_all();
 		xenbus_release_wait_for_watch(&xsdev->events);
 		break;
 	case SHUTDOWN_suspend:

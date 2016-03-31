@@ -151,8 +151,9 @@ router_thread(void *thread_data)
 		return;
 	}
 
-	ri->r->use();
 	ri->r->activate(errh);
+
+	ri->r->use();
 
 	LOG("Starting driver...\n\n");
 	ri->r->master()->thread(0)->driver();

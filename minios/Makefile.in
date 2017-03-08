@@ -16,6 +16,10 @@ XEN_ROOT		:= $(realpath $(xen_dir))
 MINIOS_ROOT		:= $(realpath $(minios_dir))
 NEWLIB_ROOT		:= $(realpath $(newlib_dir))
 LWIP_ROOT		:= $(realpath $(lwip_dir))
+CONFIG_LWIP		 = y
+CONFIG_LWIP_MINIMAL	 = y
+CONFIG_LWIP_NOTHREADS	 = y
+CONFIG_LWIP_HEAP_ONLY	 = y
 
 default: all
 

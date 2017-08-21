@@ -117,7 +117,11 @@ private:
     struct netfront_dev* _dev;
 
     static void rx_handler(unsigned char* data, int len, void* e);
-    static void pkt_destructor(unsigned char* data, long unsigned int lenght, void* arg) {};
+    static void pkt_destructor(unsigned char* data, long unsigned int lenght,
+                               void* arg) {};
+
+    static void pbuf_rx_handler(struct pbuf* p, void* e);
+    static void pbuf_pkt_destructor(unsigned char* data, long unsigned int lenght, void* arg);
 
     static String read_handler(Element* e, void *thunk);
     static int reset_counts(const String &, Element *e, void *, ErrorHandler *);
